@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Radha : The Innocent Girl</title>
+<style>
+  :root{color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:#17110e;color:#e7d9c9;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center;padding:20px}
+  .w{width:min(1050px,100%);display:flex;flex-direction:column;gap:14px}
+  header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+  h1{margin:0;font-size:22px;letter-spacing:.2px}
+  h1 b{color:#c98a5e}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600}
+  .dot{width:8px;height:8px;border-radius:50%;background:#f5c04a}
+  .grid{display:grid;grid-template-columns:1.6fr 1fr;gap:14px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .stage{position:relative;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+  .stage video{width:100%;height:100%;object-fit:cover;display:block}
+  .poster{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;letter-spacing:.45em;color:#c98a5e;background:radial-gradient(circle at 50% 32%,#2c211a,#120d0b 70%);transition:opacity .5s}
+  .badge{position:absolute;left:13px;top:13px;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.45);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600}
+  .self{position:absolute;right:13px;bottom:13px;width:148px;height:102px;border-radius:12px;overflow:hidden;background:#221a16;border:1px solid rgba(255,255,255,.15)}
+  .self video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+  .self .off{display:flex;height:100%;align-items:center;justify-content:center;font-size:11px;color:#8a7f74}
+  .tp{background:rgba(34,26,22,.75);border:1px solid rgba(255,255,255,.08);border-radius:14px;display:flex;flex-direction:column;max-height:540px;min-height:300px;overflow:hidden}
+  .tp h2{margin:0;padding:11px 15px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a89a8c;border-bottom:1px solid rgba(255,255,255,.08)}
+  .lines{padding:13px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;flex:1;font-size:14px}
+  .u{align-self:flex-end;background:#c98a5e;color:#17110e;padding:8px 12px;border-radius:13px;max-width:86%;line-height:1.45}
+  .r{align-self:flex-start;background:rgba(255,255,255,.09);padding:8px 12px;border-radius:13px;max-width:86%;line-height:1.45}
+  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  button{border:0;border-radius:999px;padding:11px 19px;font-size:14px;font-weight:600;cursor:pointer;background:#c98a5e;color:#17110e}
+  button.g{background:rgba(255,255,255,.08);color:#e7d9c9}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .msg{border-radius:9px;padding:9px 12px;font-size:13px;line-height:1.5;display:none}
+  .err{background:rgba(255,80,80,.12);color:#ffb3b3;border:1px solid rgba(255,80,80,.35)}
+  .warn{background:rgba(201,138,94,.14);color:#e0c3a6;border:1px solid rgba(201,138,94,.4)}
+  details{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:9px 13px}
+  summary{cursor:pointer;font-size:13px;color:#a89a8c}
+  .f{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}
+  @media(max-width:700px){.f{grid-template-columns:1fr}}
+  .f label{display:block;font-size:11px;color:#a89a8c;margin-bottom:3px}
+  .f input{width:100%;padding:7px 9px;border-radius:7px;background:#0d0b0a;color:#e7d9c9;border:1px solid rgba(255,255,255,.12);font-family:ui-monospace,Menlo,monospace;font-size:12px}
+</style>
+</head>
+<body>
+<div class="w">
+  <header>
+    <h1>Radha <b>:</b> The Innocent Girl</h1>
+    <span class="pill"><span class="dot" id="d"></span><span id="st">Ready</span></span>
+  </header>
+
+  <div class="grid">
+    <section style="display:flex;flex-direction:column;gap:12px">
+      <div class="stage">
+        <video id="v" autoplay playsinline></video>
+        <audio id="a" autoplay></audio>
+        <div class="poster" id="p">RADHA</div>
+        <div class="badge"><span class="dot" id="d2"></span>Radha</div>
+        <div class="self"><video id="sv" autoplay playsinline muted></video><div class="off" id="so">Camera off</div></div>
+      </div>
+      <div id="e" class="msg err"></div>
+      <div class="bar">
+        <button id="call">▶ Call Radha</button>
+        <button id="mute" class="g" disabled>Mute</button>
+        <button id="cam" class="g" disabled>Camera on</button>
+        <button id="end" class="g" disabled>End</button>
+      </div>
+    </section>
+
+    <aside class="tp"><h2>Transcript</h2><div class="lines" id="L"></div></aside>
+  </div>
+
+  <details id="set">
+    <summary>Settings — keys (browser mein hi rehti hain)</summary>
+    <div class="f">
+      <div><label>Simli API key</label><input id="k1" /></div>
+      <div><label>Simli face id</label><input id="k2" /></div>
+      <div><label>Sarvam API key</label><input id="k3" /></div>
+      <div><label>Sarvam org id</label><input id="k4" /></div>
+      <div><label>Sarvam workspace id</label><input id="k5" /></div>
+      <div><label>Sarvam app id</label><input id="k6" /></div>
+    </div>
+    <div class="bar" style="margin-top:10px"><button id="save" class="g">Save</button></div>
+  </details>
+</div>
+
+<script type="module">
+import { generateSimliSessionToken, SimliClient, LogLevel } from "https://cdn.jsdelivr.net/npm/simli-client@3.0.1/+esm";
+import { ConversationAgent, BrowserAudioInterface, InteractionType, AgentState } from "https://cdn.jsdelivr.net/npm/sarvam-conv-ai-sdk@0.0.42/+esm";
+
+const D = {
+  k1: "91jjosfjl6q5cbqtqasok5",
+  k2: "8b1a04c8-b548-452f-bf7f-04907ea9720f",
+  k3: "",
+  k4: "019f48af-6eaf-7b13-ba20-679bc10903c4",
+  k5: "019f48af-6eb6-7642-be56-bc4e7bc080ed",
+  k6: "Conversatio-18b58ac3-e3c3",
+};
+const $ = (i) => document.getElementById(i);
+let S = { ...D };
+try { const s = JSON.parse(localStorage.getItem("radha") || "null"); if (s) S = { ...S, ...s }; } catch {}
+for (const k in D) $(k).value = S[k] || "";
+$("save").onclick = () => { for (const k in D) S[k] = $(k).value.trim(); localStorage.setItem("radha", JSON.stringify(S)); st("Saved"); };
+
+const st = (t, c) => { $("st").textContent = t; $("d").style.background = c || "#f5c04a"; $("d2").style.background = c || "#f5c04a"; };
+const en = (i, o) => { $(i).disabled = !o; };
+const err = (t) => { $("e").style.display = t ? "block" : "none"; $("e").textContent = t || ""; };
+const b64 = (b) => { const s = atob(b), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; };
+
+function line(role, txt) {
+  txt = (txt || "").trim(); if (!txt) return;
+  const L = $("L"), last = L.lastElementChild;
+  if (last && last.dataset.r === role) last.textContent = txt;
+  else { const d = document.createElement("div"); d.className = role === "user" ? "u" : "r"; d.dataset.r = role; d.textContent = txt; L.appendChild(d); }
+  L.scrollTop = L.scrollHeight;
+}
+
+let sc = null, ag = null, cam = null, muted = false, camOn = false;
+// ?n=1 → voice-only (skip Simli). Useful for testing the mic without an avatar.
+const NOAV = new URLSearchParams(location.search).has("n");
+
+async function simli() {
+  const { session_token } = await generateSimliSessionToken({
+    apiKey: S.k1,
+    config: { faceId: S.k2, maxIdleTime: 600, maxSessionLength: 600, handleSilence: true },
+  });
+  return new Promise((res, rej) => {
+    sc = new SimliClient(session_token, $("v"), $("a"), null, LogLevel.ERROR, "livekit");
+    const t = setTimeout(() => rej(new Error("Simli start timeout")), 15000);
+    sc.on("start", () => { clearTimeout(t); sc.sendAudioData(new Uint8Array(6000).fill(0)); $("p").style.opacity = "0"; res(); });
+    sc.on("error", () => { clearTimeout(t); rej(new Error("Simli error — key/face id check kijiye")); });
+    sc.on("startup_error", () => { clearTimeout(t); rej(new Error("Simli start nahi hua")); });
+    sc.start().catch((e) => { clearTimeout(t); rej(e); });
+  });
+}
+
+async function call() {
+  err("");
+  if (!NOAV && (!S.k1 || !S.k2)) return err("Simli key/face id missing — Settings kholiye.");
+  if (!S.k3 || !S.k4 || !S.k5 || !S.k6) return err("Sarvam key/ids missing — Settings kholiye.");
+  en("call", false); st("Connecting…");
+  try {
+    if (!NOAV) { st("Simli…"); await simli(); }
+    st("Sarvam…");
+    const ai = new BrowserAudioInterface(16000, { outputGain: NOAV ? 1 : 0 });
+    ag = new ConversationAgent({
+      apiKey: S.k3,
+      config: {
+        org_id: S.k4, workspace_id: S.k5, app_id: S.k6,
+        user_identifier: "radha-web", user_identifier_type: "custom",
+        interaction_type: InteractionType.CALL, input_sample_rate: 16000, output_sample_rate: 16000,
+      },
+      audioInterface: ai,
+      audioCallback: async (m) => { if (sc && !NOAV) sc.sendAudioData(b64(m.audio_base64)); },
+      transcriptCallback: async (m) => line(m.role === "user" ? "user" : "radha", m.content),
+      stateCallback: (s) => {
+        if (s === AgentState.CONNECTING) st("Connecting…");
+        else if (s === AgentState.CONNECTED || s === AgentState.LISTENING) st("Sun rahi hai…", "#43d17f");
+        else if (s === AgentState.SPEAKING) st("Radha bol rahi hai…", "#c98a5e");
+        else if (s === AgentState.IDLE) st("Ready");
+        else if (s === AgentState.ERROR) st("Error", "#ff5050");
+      },
+      endCallback: async () => stop(),
+    });
+    await ag.start(); await ag.waitForConnect(10);
+    en("mute", true); en("cam", true); en("end", true);
+  } catch (e) { err(e && e.message ? e.message : String(e)); st("Error", "#ff5050"); stop(); }
+}
+
+function stop() {
+  try { ag && ag.stop(); } catch {}
+  try { sc && sc.stop(); } catch {}
+  try { cam && cam.getTracks().forEach((t) => t.stop()); } catch {}
+  ag = null; sc = null; cam = null; camOn = false;
+  $("sv").srcObject = null; $("so").style.display = "flex"; $("p").style.opacity = "1";
+  muted = false; $("mute").textContent = "Mute"; $("cam").textContent = "Camera on";
+  en("call", true); en("mute", false); en("cam", false); en("end", false); st("Ready");
+}
+
+$("call").onclick = call;
+$("end").onclick = stop;
+$("mute").onclick = () => { if (!ag) return; muted = !muted; muted ? ag.mute() : ag.unmute(); $("mute").textContent = muted ? "Unmute" : "Mute"; };
+$("cam").onclick = async () => {
+  if (camOn) { try { cam.getTracks().forEach((t) => t.stop()); } catch {} cam = null; $("sv").srcObject = null; $("so").style.display = "flex"; camOn = false; $("cam").textContent = "Camera on"; return; }
+  try { cam = await navigator.mediaDevices.getUserMedia({ video: true }); $("sv").srcObject = cam; $("so").style.display = "none"; camOn = true; $("cam").textContent = "Camera off"; }
+  catch (e) { err("Camera nahi mila: " + e.message); }
+};
+
+if (!S.k3) {
+  $("set").open = true;
+  const e = $("e"); e.className = "msg warn"; e.style.display = "block";
+  e.textContent = "Pehli baar: Settings mein apni Sarvam API key daaliye (sirf ek baar — browser yaad rakhega).";
+}
+</script>
+</body>
+</html>
