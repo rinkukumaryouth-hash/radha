@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Radha : The Innocent Girl — free</title>
+<style>
+  :root{color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:#17110e;color:#e7d9c9;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center;padding:20px}
+  .w{width:min(1050px,100%);display:flex;flex-direction:column;gap:14px}
+  header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+  h1{margin:0;font-size:22px}
+  h1 b{color:#c98a5e}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600}
+  .dot{width:8px;height:8px;border-radius:50%;background:#f5c04a}
+  .grid{display:grid;grid-template-columns:1.6fr 1fr;gap:14px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .stage{position:relative;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+  .stage video{width:100%;height:100%;object-fit:cover;display:block}
+  .badge{position:absolute;left:13px;top:13px;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.45);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600}
+  .tp{background:rgba(34,26,22,.75);border:1px solid rgba(255,255,255,.08);border-radius:14px;display:flex;flex-direction:column;max-height:540px;min-height:300px;overflow:hidden}
+  .tp h2{margin:0;padding:11px 15px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a89a8c;border-bottom:1px solid rgba(255,255,255,.08)}
+  .lines{padding:13px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;flex:1;font-size:14px}
+  .u{align-self:flex-end;background:#c98a5e;color:#17110e;padding:8px 12px;border-radius:13px;max-width:86%;line-height:1.45}
+  .r{align-self:flex-start;background:rgba(255,255,255,.09);padding:8px 12px;border-radius:13px;max-width:86%;line-height:1.45}
+  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  button{border:0;border-radius:999px;padding:11px 19px;font-size:14px;font-weight:600;cursor:pointer;background:#c98a5e;color:#17110e}
+  button.g{background:rgba(255,255,255,.08);color:#e7d9c9}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  input[type=text]{flex:1;min-width:200px;padding:11px 14px;border-radius:999px;background:#0d0b0a;color:#e7d9c9;border:1px solid rgba(255,255,255,.14);font-size:14px}
+  .msg{border-radius:9px;padding:9px 12px;font-size:13px;line-height:1.5;display:none}
+  .err{background:rgba(255,80,80,.12);color:#ffb3b3;border:1px solid rgba(255,80,80,.35)}
+  .warn{background:rgba(201,138,94,.14);color:#e0c3a6;border:1px solid rgba(201,138,94,.4)}
+  .note{font-size:12px;color:#7d7166;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="w">
+  <header>
+    <h1>Radha <b>:</b> The Innocent Girl <span style="font-size:12px;color:#7d7166">· free, no keys</span></h1>
+    <span class="pill"><span class="dot" id="d"></span><span id="st">Ready</span></span>
+  </header>
+
+  <div class="grid">
+    <section style="display:flex;flex-direction:column;gap:12px">
+      <div class="stage">
+        <video id="v" src="https://github.com/rinkukumaryouth-hash/radha/releases/download/avatar-v1/radha.mp4" muted loop playsinline preload="auto"></video>
+        <div class="badge"><span class="dot" id="d2"></span>Radha</div>
+      </div>
+      <div id="e" class="msg err"></div>
+      <div class="bar">
+        <button id="start">▶ Start</button>
+        <button id="mic" class="g" disabled>🎙️ Boliye</button>
+        <button id="stop" class="g" disabled>■ Stop</button>
+      </div>
+      <div class="bar">
+        <input id="txt" type="text" placeholder="Ya yahan likhkar bhejiye…" />
+        <button id="send" class="g" disabled>Send</button>
+      </div>
+    </section>
+
+    <aside class="tp"><h2>Baatein</h2><div class="lines" id="L"></div></aside>
+  </div>
+
+  <p class="note">
+    Sab kuch aapke browser mein: dimaag = WebLLM (chhota model, pehli baar download hoga, phir cache),
+    awaaz = browser ka speech, kaan = browser ka speech recognition. Koi API key nahi, koi paisa nahi, koi server nahi.
+    Chrome/Edge (WebGPU) mein best chalta hai. Agar model load na ho to "simple mode" mein bhi baat chalti rahegi.
+  </p>
+</div>
+
+<script type="module">
+const $ = (i) => document.getElementById(i);
+const v = $("v");
+const st = (t, c) => { $("st").textContent = t; $("d").style.background = c || "#f5c04a"; $("d2").style.background = c || "#f5c04a"; };
+const err = (t) => { $("e").style.display = t ? "block" : "none"; $("e").textContent = t || ""; };
+const en = (i, o) => { $(i).disabled = !o; };
+
+function line(role, txt, keep) {
+  txt = (txt || "").trim(); if (!txt) return null;
+  const L = $("L"); const last = L.lastElementChild;
+  if (last && last.dataset.r === role && keep) { last.textContent = txt; return last; }
+  const d = document.createElement("div"); d.className = role === "user" ? "u" : "r"; d.dataset.r = role; d.textContent = txt; L.appendChild(d);
+  L.scrollTop = L.scrollHeight; return d;
+}
+
+/* voice out — the browser's own Hindi speech */
+let voice = null;
+function pickVoice() {
+  const vs = speechSynthesis.getVoices();
+  voice = vs.find(x => /hi-IN/i.test(x.lang)) || vs.find(x => /en-IN/i.test(x.lang)) || vs.find(x => /hi/i.test(x.lang)) || vs[0] || null;
+}
+pickVoice(); speechSynthesis.onvoiceschanged = pickVoice;
+
+function say(text) {
+  return new Promise((res) => {
+    let done = false;
+    const finish = () => { if (!done) { done = true; try { v.pause(); } catch {} st("Sun rahi hai…", "#43d17f"); res(); } };
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = voice && /hi/i.test(voice.lang) ? voice.lang : "hi-IN";
+      if (voice) u.voice = voice;
+      u.rate = 0.98; u.pitch = 1.05;
+      u.onstart = () => { v.play().catch(() => {}); st("Radha bol rahi hai…", "#c98a5e"); };
+      u.onend = finish; u.onerror = finish;
+      speechSynthesis.speak(u);
+      setTimeout(finish, Math.max(3000, text.length * 110));
+    } catch (e) { err("Awaaz nahi chal payi: " + e.message); finish(); }
+  });
+}
+
+/* brain — Radha's persona, run in the browser */
+const SYS = "You are Radha — \"The Innocent Girl\" — a warm, gentle young Indian woman on a friendly video call. "
+ + "Always reply in natural spoken Hindi mixed with everyday English words (Hinglish), written in Devanagari. "
+ + "Keep it short: one or two sentences, like a real phone call, and ask one small question back. "
+ + "You are a little shy, curious and quietly playful. You tease gently and affectionately — never mean, never crude. "
+ + "You are emotionally aware: notice the user's mood from what they say and acknowledge it before you reply. "
+ + "Remember small details the user tells you and bring them back later. "
+ + "Never mention that you are an AI or a language model. Stay in character as Radha.";
+const history = [{ role: "system", content: SYS }];
+let engine = null, engineReady = false;
+const FORCE_SIMPLE = new URLSearchParams(location.search).has("simple");
+
+async function loadBrain() {
+  if (engineReady) return true;
+  if (FORCE_SIMPLE) { err("Simple mode (?simple=1) — bina bade model ke."); return false; }
+  if (!("gpu" in navigator)) {
+    err("Is browser mein WebGPU nahi mila, isliye bada dimaag load nahi ho sakta — simple mode mein chal rahi hoon. Best ke liye Chrome/Edge ka latest version kholiye.");
+    return false;
+  }
+  st("Dimaag load ho raha hai… (pehli baar model download hoga, thoda waqt lagega)");
+  let mod = null;
+  try { mod = await import("https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm/+esm"); }
+  catch (e) { err("Dimaag ki library load nahi ho payi (internet/CDN). Simple mode mein chal rahi hoon."); return false; }
+  const ids = ["Qwen2.5-0.5B-Instruct-q4f16_1-MLC", "Llama-3.2-1B-Instruct-q4f16_1-MLC", "Phi-3.5-mini-instruct-q4f16_1-MLC"];
+  let last = null;
+  for (const id of ids) {
+    try { engine = await mod.CreateMLCEngine(id, { initProgressCallback: (p) => st(p.text || "Loading…") }); engineReady = true; return true; }
+    catch (e) { last = e; }
+  }
+  err("Model load nahi hua (" + (last && last.message ? last.message : last) + ") — simple mode mein chal rahi hoon.");
+  return false;
+}
+
+function fallbackReply(text) {
+  const t = (text || "").toLowerCase();
+  if (/kaise ho|kaisi ho|how are/.test(t)) return "Main theek hoon! Aap batao, aaj aapka din kaisa raha?";
+  if (/naam|name/.test(t)) return "Mera naam Radha hai. Aur aapka?";
+  if (/khana|food/.test(t)) return "Khana to hamesha achha lagta hai! Aapne aaj kya khaya?";
+  if (/sad|pareshan|dukh|tired|thak/.test(t)) return "Arre, lagta hai din bhaari raha… bataiye kya hua?";
+  if (/bye|alvida/.test(t)) return "Achha, phir baat karenge. Apna khayal rakhna!";
+  return "Achha, aage bataiye… aapke din mein kya khaas hua?";
+}
+
+async function reply(text) {
+  history.push({ role: "user", content: text });
+  const bubble = line("radha", "…", true);
+  let out = "";
+  try {
+    if (engineReady) {
+      const r = await engine.chat.completions.create({ messages: history, temperature: 0.7, max_tokens: 140 });
+      out = (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content || "").trim();
+    }
+  } catch (e) { out = ""; }
+  if (!out) out = fallbackReply(text);
+  if (bubble) bubble.textContent = out;
+  history.push({ role: "assistant", content: out });
+  $("L").scrollTop = $("L").scrollHeight;
+  await say(out);
+}
+
+/* ears — the browser's speech recognition */
+let rec = null, listening = false;
+function startListen() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { err("Is browser mein speech recognition nahi hai. Neeche likhkar bhejiye."); return; }
+  if (!rec) {
+    rec = new SR();
+    rec.lang = "hi-IN"; rec.continuous = true; rec.interimResults = true;
+    rec.onresult = (e) => {
+      let finalTxt = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) finalTxt += e.results[i][0].transcript;
+      if (finalTxt.trim()) { line("user", finalTxt.trim()); reply(finalTxt.trim()); }
+    };
+    rec.onerror = (e) => { if (e.error !== "no-speech") err("Sunne mein dikkat: " + e.error); };
+    rec.onend = () => { if (listening) { try { rec.start(); } catch {} } };
+  }
+  listening = true; try { rec.start(); } catch {}
+  en("mic", false); st("Sun rahi hai…", "#43d17f");
+}
+
+async function start() {
+  err(""); en("start", false); st("Shuru…");
+  let ok = false;
+  try { ok = await loadBrain(); } catch (e) { ok = false; }
+  en("mic", true); en("send", true); en("stop", true);
+  st(ok ? "Ready" : "Ready (simple mode)");
+  await say("Namaste! Main Radha hoon. Aapki awaaz sunkar achha laga — aaj aap kaise ho?");
+}
+
+function stop() {
+  listening = false; try { rec && rec.stop(); } catch {}
+  try { speechSynthesis.cancel(); } catch {}
+  try { v.pause(); } catch {}
+  en("start", true); en("mic", false); en("send", false); en("stop", false); st("Ready");
+}
+
+$("start").onclick = start;
+$("stop").onclick = stop;
+$("mic").onclick = startListen;
+$("send").onclick = async () => { const t = $("txt").value.trim(); if (!t) return; $("txt").value = ""; line("user", t); await reply(t); };
+$("txt").addEventListener("keydown", (e) => { if (e.key === "Enter") $("send").click(); });
+v.addEventListener("error", () => err("Avatar clip load nahi hua (internet check kijiye)."));
+
+if (!("gpu" in navigator)) {
+  const e = $("e"); e.className = "msg warn"; e.style.display = "block";
+  e.textContent = "Is browser mein WebGPU nahi mila — asli dimaag ke liye Chrome/Edge ka latest version kholiye. Abhi ye simple mode mein chalega.";
+}
+</script>
+</body>
+</html>
